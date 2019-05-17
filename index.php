@@ -11,9 +11,17 @@ if(isset($_POST['submitBtn']) && !empty($_POST['submitBtn'])) {
         //Check extension
         if(in_array($ext, $allowed_extensions)) {
            //Convert image to base64
+			list( $width,$height ) = getimagesize( $_FILES['uploadFile']['tmp_name'] );
+			echo("height is $height");
+			$thumb = imagecreatetruecolor( 200, 200 );
+			$source = imagecreatefromjpeg($_FILES['uploadFile']['tmp_name']);
+			
+			imagecopyresized($thumb, $source, 0, 0, 0, 0, 200, 200, $width, $height);
+			imagejpeg( $thumb, $_FILES['uploadFile']['tmp_name'], 100 ); 
+			
            $encoded_image = base64_encode(file_get_contents($_FILES['uploadFile']['tmp_name']));
            $encoded_image = 'data:image/' . $ext . ';base64,' . $encoded_image;
-           $query = "INSERT INTO images (id, encoded_image) VALUES (NULL, 'sachithaaa');";
+           $query = "INSERT INTO images (id, encoded_image) VALUES (NULL, '$encoded_image');";
 			
 //			echo("<br>");
 //			echo($query);
